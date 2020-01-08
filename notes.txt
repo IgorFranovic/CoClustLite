@@ -1,0 +1,31 @@
+
+-----------------------------
+Vectorizer
+______
+vectorizer min_df = 5? We can play around with this number
+to get different results.
+
+---------------------------------
+SpectralCoclustering
+_________
+
+svd_method = arpack(slower, more accurate?)
+           = randomized(faster, less accurate?)
+finding singular vectors
+------------------------------------
+MiniBatchKMeans
+__________
+batch_size impacts performance, how?
+
+----------------------------------
+V-measure
+_______
+Harmonic mean between homogeneity and completeness
+v = (1 + beta)*h*c / (beta * h + c)
+
+test for different beta values
+#https://scikit-learn.org/stable/modules/generated/sklearn.metrics.v_measure_score.html
+
+! implement homogeneity and completeness tests separately
+
+! implement consensus scores to measure bicluster similarities
