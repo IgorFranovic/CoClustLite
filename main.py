@@ -1,6 +1,7 @@
 from collections import defaultdict
 import operator
-from time import time
+import time
+
 
 import numpy as np
 
@@ -14,11 +15,12 @@ from sklearn.metrics.cluster import v_measure_score
 
 from matplotlib import pyplot as plt
 
+import sys
 
 
 if __name__=='__main__':
     from __init__ import __doc__
-    
+
 
 
 
@@ -57,6 +59,33 @@ categories = ['alt.atheism', 'comp.graphics',
               'talk.politics.guns', 'talk.politics.mideast',
               'talk.politics.misc', 'talk.religion.misc']
 newsgroups = fetch_20newsgroups(categories=categories)
+####
+dataset_name = ''
+print("Enter dataset path (Fetch20Newsgroups by 'default'): \n $ ", end = '')
+github_link = 'https://github.com/IgorFranovic/CoClustLite'
+def quit():
+    print("Thank you for using CoClustLite\n")
+    print(github_link)
+    sys.exit()
+inq = str(input())
+
+if 'default' not in inq:
+    print('Invalid path!')
+    quit()
+dataset_name = 'Fetch20Newsgroups'
+
+print('Enter additional parameters (type -help for additional information): \n $ ', end ='')
+inp = str(input())
+inq = inp.split()
+
+
+def progress(n):
+    print('Progress [', end='')
+    for _ in range(n):
+        print('#', end='')
+        time.sleep(0.01)
+    print(']')
+####
 y_true = newsgroups.target
 
 vectorizer = NumberNormalizingVectorizer(stop_words='english', min_df=5)
@@ -65,22 +94,28 @@ cocluster = SpectralCoclustering(n_clusters=len(categories),
 kmeans = MiniBatchKMeans(n_clusters=len(categories), batch_size=20000,
                          random_state=0)
 
-print("Vectorizing...")
-X = vectorizer.fit_transform(newsgroups.data)
+print('Performing coclustering vs clustering comparison on the ' + dataset_name + ' dataset.')
 
-print("Coclustering...")
-start_time = time()
+print(" -- Vectorizing data...")
+X = vectorizer.fit_transform(newsgroups.data)
+progress(10)
+
+print(" -- Coclustering ...")
+progress(10)
+
+start_time = time.time()
 cocluster.fit(X)
 y_cocluster = cocluster.row_labels_
-print("Done in {:.2f}s. V-measure: {:.4f}".format(
-    time() - start_time,
+print(" -- Completed in {:.2f}s.\n -- V-measure score: {:.4f}".format(
+    time.time() - start_time,
     v_measure_score(y_cocluster, y_true)))
 
-print("MiniBatchKMeans...")
-start_time = time()
+print("________________________")
+print(" -- MiniBatchKMeans...")
+start_time = time.time()
 y_kmeans = kmeans.fit_predict(X)
-print("Done in {:.2f}s. V-measure: {:.4f}".format(
-    time() - start_time,
+print(" -- Completed in {:.2f}s. V-measure: {:.4f}".format(
+    time.time() - start_time,
     v_measure_score(y_kmeans, y_true)))
 
 feature_names = vectorizer.get_feature_names()
@@ -171,6 +206,17 @@ for idx, cluster in enumerate(best_idx):
 
 #print("DONE")
 
-from visualization import plotter
-my_bar_plot = plotter.Visualizer(type='bar', data=visualization_data)
-my_bar_plot.visualize()
+
+if '-v' in inq or '-visualize' in inq:
+    from visualization import plotter
+    method = [True, False]
+    method[0] = 'tf' in inq or 'to_file' in inq
+    method[1] = 'ts' in inq or 'to_screen' in inq
+    path = 'visualization/saves/test.png'
+    if '-p' in inq:
+        path = inq[inq.index('-p')+1]
+    my_bar_plot = plotter.Visualizer(type='bar', data=visualization_data, to_file = method[0], to_screen = method[1], file_path = path)
+    my_bar_plot.visualize()
+
+
+quit()

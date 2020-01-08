@@ -3,14 +3,14 @@ from matplotlib import pyplot as plt
 
 
 class Visualizer():
-    def __init__(self, type, data, to_file=True, to_screen=False, file_path='visualization/saves/test.png'):
+    def __init__(self, type, data, file_path, to_file=True, to_screen=False):
         # type of visualizer
         self.type = type
         self.data = data
         self.subplot_count = len(self.data)
         self.to_file = to_file
         self.to_screen = to_screen
-        self.file_path = file_path
+        self.file_path = file_path + '\CoClustLite_Save.png'
 
     def visualize(self):
         if self.type == 'bar':
@@ -23,8 +23,8 @@ class Visualizer():
         print("Visualizing...")
         #print(self.data)
         #input()
-        plt.title('Top ' + str(self.subplot_count) + ' clusters.')
-        fig, axs = plt.subplots(self.subplot_count, 1, sharex=False, sharey=False, figsize=(14, 8))
+        #plt.title('Top ' + str(self.subplot_count) + ' clusters.')
+        fig, axs = plt.subplots(self.subplot_count, 1, sharex=False, sharey=False, figsize=(16, 8))
         axs_cnt = 0
         for subplot in self.data:
             #print(subplot)
