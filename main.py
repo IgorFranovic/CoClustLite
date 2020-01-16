@@ -87,8 +87,10 @@ def progress(n):
     print(']')
 ####
 y_true = newsgroups.target
+print(y_true)
 
 vectorizer = NumberNormalizingVectorizer(stop_words='english', min_df=5)
+
 cocluster = SpectralCoclustering(n_clusters=len(categories),
                                  svd_method='arpack', random_state=0)
 kmeans = MiniBatchKMeans(n_clusters=len(categories), batch_size=20000,
@@ -97,15 +99,18 @@ kmeans = MiniBatchKMeans(n_clusters=len(categories), batch_size=20000,
 print('Performing coclustering vs clustering comparison on the ' + dataset_name + ' dataset.')
 
 print(" -- Vectorizing data...")
+
 X = vectorizer.fit_transform(newsgroups.data)
-progress(10)
+
+progress(30)
 
 print(" -- Coclustering ...")
-progress(10)
+progress(30)
 
 start_time = time.time()
 cocluster.fit(X)
 y_cocluster = cocluster.row_labels_
+print(y_cocluster)
 print(" -- Completed in {:.2f}s.\n -- V-measure score: {:.4f}".format(
     time.time() - start_time,
     v_measure_score(y_cocluster, y_true)))
